@@ -35,14 +35,19 @@ const LoginPage = ({ onLogin }) => {
     try {
       setSchoolsLoading(true);
       const response = await apiService.getSchools();
-      if (response.success) {
+      // Django API returns {"schools": [...]} format
+      if (response.schools && Array.isArray(response.schools)) {
         setSchools(response.schools);
+        if (response.schools.length === 0) {
+          message.warning('No schools found');
+        }
       } else {
-        message.error('Failed to load schools');
+        message.error('Invalid response format from server');
       }
     } catch (error) {
       console.error('Error fetching schools:', error);
-      message.error('Failed to connect to server');
+      message.error('Failed to connect to server. Please check your connection.');
+      setSchools([]); // Set empty array on error
     } finally {
       setSchoolsLoading(false);
     }
@@ -62,8 +67,10 @@ const LoginPage = ({ onLogin }) => {
         password: values.password,
       });
 
-      if (response.success) {
-        onLogin(response.user);
+      // Django API returns {"message": "Login successful", "admin": {...}} format
+      if (response.message === 'Login successful' && response.admin) {
+        onLogin(response.admin);
+        message.success('Login successful!');
       } else {
         message.error(response.error || 'Login failed');
       }
@@ -128,13 +135,15 @@ const LoginPage = ({ onLogin }) => {
             ]}
           >
             <Select
-              placeholder="Choose your school"
+              placeholder={schoolsLoading ? "Loading schools..." : schools.length === 0 ? "No schools available" : "Choose your school"}
               loading={schoolsLoading}
+              disabled={schoolsLoading || schools.length === 0}
               onChange={handleSchoolChange}
               showSearch
               filterOption={(input, option) =>
                 option.children.toLowerCase().includes(input.toLowerCase())
               }
+              notFoundContent={schoolsLoading ? "Loading..." : "No schools found"}
             >
               {schools.map(school => (
                 <Option key={school.school_id} value={school.school_id}>
