@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -85,23 +86,38 @@ WSGI_APPLICATION = 'school_management_system.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# Railway MySQL Database Configuration
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'railway',
-        'USER': 'root',
-        'PASSWORD': 'oedglLlOuKszsGcPupOFjEzFoLDGBeWj',
-        'HOST': 'nozomi.proxy.rlwy.net',
-        'PORT': '27878',
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-            'autocommit': True,
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            'connect_timeout': 60,
-        },
+# Railway MySQL Database Configuration using DATABASE_URL
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, conn_health_checks=True)
     }
-}
+    # Add MySQL specific options
+    DATABASES['default']['OPTIONS'] = {
+        'charset': 'utf8mb4',
+        'autocommit': True,
+        'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        'connect_timeout': 60,
+    }
+else:
+    # Fallback configuration for local development
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ.get('DB_NAME', 'railway'),
+            'USER': os.environ.get('DB_USER', 'root'),
+            'PASSWORD': os.environ.get('DB_PASSWORD', 'oedglLlOuKszsGcPupOFjEzFoLDGBeWj'),
+            'HOST': os.environ.get('DB_HOST', 'nozomi.proxy.rlwy.net'),
+            'PORT': os.environ.get('DB_PORT', '27878'),
+            'OPTIONS': {
+                'charset': 'utf8mb4',
+                'autocommit': True,
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+                'connect_timeout': 60,
+            },
+        }
+    }
 
 
 # Password validation

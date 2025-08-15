@@ -7,7 +7,7 @@ from authentication.models import School
 class ScheduleTemplate(models.Model):
     """Template for creating schedules"""
     id = models.AutoField(primary_key=True)
-    school = models.ForeignKey(School, on_delete=models.CASCADE, db_column='school_id')
+    school_id = models.CharField(max_length=10, db_column='school_id')  # Match School.school_id field type
     template_name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -15,6 +15,7 @@ class ScheduleTemplate(models.Model):
     
     class Meta:
         db_table = 'schedule_templates'
+        managed = False  # Don't let Django manage this table structure
     
     def __str__(self):
         return f"{self.template_name} - {self.school.school_name}"
