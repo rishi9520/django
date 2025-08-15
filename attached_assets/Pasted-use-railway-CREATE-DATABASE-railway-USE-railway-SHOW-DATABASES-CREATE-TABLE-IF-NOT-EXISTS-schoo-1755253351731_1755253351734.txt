@@ -1,0 +1,182 @@
+use railway
+CREATE DATABASE railway;
+
+USE railway;
+SHOW DATABASES;
+
+CREATE TABLE IF NOT EXISTS schools (
+    school_id VARCHAR(50) PRIMARY KEY,
+    school_name VARCHAR(255),
+    address VARCHAR(255),
+    email VARCHAR(255),
+    api_key VARCHAR(100),
+    logourl VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS admins (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    school_id VARCHAR(50),
+    username VARCHAR(255),
+    password VARCHAR(255), 
+    name VARCHAR(255),
+    phone VARCHAR(20),
+    teacher_id VARCHAR(50),
+    email VARCHAR(255)
+);
+-- Note for admins: Consider if 'username' should be globally unique or per school.
+-- If per school, the UNIQUE KEY is good. If teacher_id is a link to users, a FK could be added later.
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY, -- This 'id' is the internal primary key for the users table itself
+    school_id VARCHAR(50),
+    teacher_id VARCHAR(50), -- This is your business key for a teacher, e.g., T001
+    name VARCHAR(255),
+    phone VARCHAR(20),
+    category VARCHAR(50),
+    biometric_code VARCHAR(25) NULL
+     -- Added role, assuming users are mostly teachers. Adjust if needed.
+    -- UNIQUE KEY unique_teacher_id_per_school (school_id, teacher_id),
+    -- FOREIGN KEY (school_id) REFERENCES schools(schoolid) ON DELETE CASCADE
+);
+-- Note for users: 'id' is PK. (school_id, teacher_id) should be unique.
+
+CREATE TABLE IF NOT EXISTS arrangements (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    school_id VARCHAR(50),
+    date DATE,
+    absent_teacher VARCHAR(50), 
+    absent_name VARCHAR(255),
+    absent_category VARCHAR(50),
+    replacement_teacher VARCHAR(50), 
+    replacement_name VARCHAR(255),
+    replacement_category VARCHAR(50),
+    class VARCHAR(50), -- Consider renaming to class_name or similar if 'class' is a reserved keyword
+    period INT,
+    status VARCHAR(50),
+    match_quality VARCHAR(50)
+    -- FOREIGN KEY (school_id) REFERENCES schools(schoolid) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS attendance (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    school_id VARCHAR(50),
+    date DATE,
+    teacher_id VARCHAR(50), 
+    status VARCHAR(20),
+    timestamp DATETIME, 
+    is_auto BOOLEAN,
+    biometric_code VARCHAR(25) NULL
+    -- FOREIGN KEY (school_id) REFERENCES schools(schoolid) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS daily_schedules (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    school_id VARCHAR(50),
+    day_of_week VARCHAR(20), 
+    teacher_id VARCHAR(50), 
+    name VARCHAR(255),
+    category VARCHAR(50),
+    subject VARCHAR(255),
+    period_number INT,
+    class_info VARCHAR(255)
+    -- UNIQUE KEY unique_schedule_slot_per_school (school_id, teacher_id, day_of_week, period_number),
+    -- FOREIGN KEY (school_id) REFERENCES schools(schoolid) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS schedules_summary (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    school_id VARCHAR(50),
+    teacher_id VARCHAR(50), 
+    name VARCHAR(255),
+    category VARCHAR(50), -- Added category as it's in daily_schedules and likely users
+    subject VARCHAR(255),
+    period1 VARCHAR(255),
+    period2 VARCHAR(255),
+    period3 VARCHAR(255),
+    period4 VARCHAR(255),
+    period5 VARCHAR(255), -- Added to match potential 7 periods
+    period6 VARCHAR(255), -- Added
+    period7 VARCHAR(255)  -- Added
+    -- FOREIGN KEY (school_id) REFERENCES schools(schoolid) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS workload_counter (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    school_id VARCHAR(50),
+    teacher_id VARCHAR(50), 
+    workload_count INT
+    -- UNIQUE KEY unique_workload_per_teacher_school (school_id, teacher_id),
+    -- FOREIGN KEY (school_id) REFERENCES schools(schoolid) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS coverage_tracking (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    school_id VARCHAR(50),
+    date DATE,
+    period INT,
+    class_name VARCHAR(50),
+    section VARCHAR(50),
+    subject VARCHAR(255),
+    original_teacher_id VARCHAR(50), 
+    replacement_teacher_id VARCHAR(50), 
+    status VARCHAR(50),
+    notes TEXT
+    -- FOREIGN KEY (school_id) REFERENCES schools(schoolid) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS substitutes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    school_id VARCHAR(50),
+    substitute_id VARCHAR(50), 
+    name VARCHAR(255),
+    phone VARCHAR(20),
+    subject_expertise TEXT,
+    qualification VARCHAR(255),
+    availability VARCHAR(255),
+    rating DECIMAL(3,2),
+    category VARCHAR(50),
+    notes TEXT
+    -- UNIQUE KEY unique_substitute_id_per_school (school_id, substitute_id),
+    -- FOREIGN KEY (school_id) REFERENCES schools(schoolid) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS suspended_dates (
+    id INT AUTO_INCREMENT PRIMARY KEY, -- Added a simple PK for easier management
+    school_id VARCHAR(50),
+    date DATE
+ 
+);
+CREATE TABLE timing ( -- Yeh NAYI definition hai
+    timing_id INT AUTO_INCREMENT PRIMARY KEY,
+    school_id VARCHAR(50) NOT NULL,
+    hour INT NOT NULL,
+    minute INT NOT NULL,
+    enabled BOOLEAN
+);
+
+INSERT INTO timing (school_id, hour, minute, enabled) 
+VALUES ('S001', 17, 0, TRUE)
+ON DUPLICATE KEY UPDATE  -- Agar S001 ki entry pehle se hai, toh use update karo
+    hour = 17,
+    minute = 0,
+    enabled = TRUE;
+;
+ALTER TABLE schools 
+ADD CONSTRAINT uq_api_key UNIQUE (api_key);
+ALTER TABLE attendance
+ADD CONSTRAINT uq_biometric_code UNIQUE (biometric_code);
+ALTER TABLE admins 
+ADD CONSTRAINT unique_admin_per_school UNIQUE (school_id, username);
+ALTER TABLE users
+ADD CONSTRAINT uq_biometric_code UNIQUE (biometric_code);
+ALTER TABLE attendance
+ADD UNIQUE KEY unique_attendance_record (school_id, teacher_id, date);
+
+CREATE TABLE school_logic (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    school_id VARCHAR(50) NOT NULL UNIQUE,
+    logic_name VARCHAR(255) DEFAULT 'Default Logic',
+    logic_code TEXT NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);

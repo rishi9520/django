@@ -1,0 +1,20 @@
+[project]
+name = "repl-nix-workspace"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.11"
+dependencies = [
+    "bcrypt>=4.3.0",
+    "certifi>=2025.1.31",
+    "django>=5.2.5",
+    "django-cors-headers>=4.7.0",
+    "djangorestframework>=3.16.1",
+    "mysql-connector-python>=9.4.0",
+    "pandas>=2.2.3",
+    "python-dotenv>=1.1.1",
+    "pytz>=2025.2",
+    "requests>=2.32.3",
+    "schedule>=1.2.2",
+    "streamlit>=1.44.1",
+    "streamlit-lottie>=0.0.5",
+]
