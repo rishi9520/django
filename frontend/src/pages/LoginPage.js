@@ -86,37 +86,109 @@ const LoginPage = ({ onLogin }) => {
   };
 
   return (
-    <div className="login-container">
+    <div className="login-container" style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '20px',
+      position: 'relative',
+      overflow: 'hidden'
+    }}>
+      {/* Floating Background Elements */}
+      <div style={{
+        position: 'absolute',
+        top: '10%',
+        left: '10%',
+        width: '100px',
+        height: '100px',
+        background: 'rgba(255,255,255,0.1)',
+        borderRadius: '50%',
+        animation: 'float 6s ease-in-out infinite'
+      }}></div>
+      <div style={{
+        position: 'absolute',
+        top: '70%',
+        right: '15%',
+        width: '150px',
+        height: '150px',
+        background: 'rgba(255,255,255,0.08)',
+        borderRadius: '50%',
+        animation: 'float 8s ease-in-out infinite reverse'
+      }}></div>
+      <div style={{
+        position: 'absolute',
+        bottom: '20%',
+        left: '20%',
+        width: '80px',
+        height: '80px',
+        background: 'rgba(255,255,255,0.12)',
+        borderRadius: '50%',
+        animation: 'float 7s ease-in-out infinite'
+      }}></div>
+
       <Card 
         className="login-form"
         style={{
-          borderRadius: '15px',
-          boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+          borderRadius: '25px',
+          boxShadow: '0 25px 50px rgba(0,0,0,0.2)',
+          backdropFilter: 'blur(10px)',
+          background: 'rgba(255,255,255,0.95)',
+          border: '1px solid rgba(255,255,255,0.3)',
+          width: '100%',
+          maxWidth: '500px',
+          zIndex: 1,
+          position: 'relative'
         }}
       >
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
           {selectedSchool?.logourl ? (
             <Avatar
               src={selectedSchool.logourl}
-              size={64}
-              style={{ marginBottom: '16px' }}
+              size={80}
+              style={{ 
+                marginBottom: '20px',
+                backgroundColor: 'transparent',
+                border: '3px solid #667eea'
+              }}
             />
           ) : (
             <Avatar
               icon={<BookOutlined />}
-              size={64}
+              size={80}
               style={{ 
-                backgroundColor: '#40a9ff',
-                marginBottom: '16px'
+                backgroundColor: '#667eea',
+                marginBottom: '20px',
+                border: '3px solid #764ba2'
               }}
             />
           )}
-          <Title level={2} style={{ margin: '0 0 8px 0', color: '#1890ff' }}>
-            {selectedSchool?.school_name || 'School Management System'}
+          <Title level={1} style={{ 
+            margin: '0 0 12px 0', 
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            fontSize: '2.5rem',
+            fontWeight: 'bold'
+          }}>
+            {selectedSchool?.school_name || 'School Management Pro'}
           </Title>
-          <Text type="secondary">
-            Teacher Arrangement & Attendance System
+          <Text style={{ 
+            color: '#6B7280', 
+            fontSize: '16px',
+            display: 'block',
+            marginBottom: '8px'
+          }}>
+            Advanced Teacher Management & Attendance System
+          </Text>
+          <Text style={{ 
+            color: '#9CA3AF', 
+            fontSize: '14px',
+            fontStyle: 'italic'
+          }}>
+            Streamline your school operations with intelligent automation
           </Text>
         </div>
 
@@ -217,10 +289,45 @@ const LoginPage = ({ onLogin }) => {
         </Form>
 
         {/* Footer */}
-        <div style={{ textAlign: 'center', marginTop: '24px' }}>
-          <Text type="secondary" style={{ fontSize: '12px' }}>
-            Powered by School Management System
-          </Text>
+        <div style={{ textAlign: 'center', marginTop: '30px' }}>
+          <div style={{ marginBottom: '16px' }}>
+            <Text style={{ 
+              color: '#6B7280', 
+              fontSize: '13px',
+              display: 'block',
+              marginBottom: '8px'
+            }}>
+              By logging in, you agree to our{' '}
+              <a href="#" style={{ color: '#667eea', textDecoration: 'none' }}>
+                Terms & Conditions
+              </a>{' '}
+              and{' '}
+              <a href="#" style={{ color: '#667eea', textDecoration: 'none' }}>
+                Privacy Policy
+              </a>
+            </Text>
+          </div>
+          <div style={{ 
+            borderTop: '1px solid #E5E7EB', 
+            paddingTop: '16px',
+            textAlign: 'center'
+          }}>
+            <Text style={{ 
+              color: '#9CA3AF', 
+              fontSize: '12px',
+              display: 'block'
+            }}>
+              © 2025 School Management Pro. All rights reserved.
+            </Text>
+            <Text style={{ 
+              color: '#9CA3AF', 
+              fontSize: '11px',
+              display: 'block',
+              marginTop: '4px'
+            }}>
+              Powered by Advanced AI Technology | Version 2.0
+            </Text>
+          </div>
         </div>
       </Card>
     </div>

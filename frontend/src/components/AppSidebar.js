@@ -90,14 +90,18 @@ const AppSidebar = ({ collapsed, onCollapse, user }) => {
           <Avatar
             src={user.school_logo}
             size={collapsed ? 32 : 40}
-            style={{ marginRight: collapsed ? 0 : 12 }}
+            style={{ 
+              marginRight: collapsed ? 0 : 12,
+              backgroundColor: 'transparent'
+            }}
           />
         ) : (
           <Avatar
             icon={<BookOutlined />}
             size={collapsed ? 32 : 40}
             style={{ 
-              backgroundColor: '#40a9ff',
+              backgroundColor: 'transparent',
+              color: 'white',
               marginRight: collapsed ? 0 : 12 
             }}
           />
