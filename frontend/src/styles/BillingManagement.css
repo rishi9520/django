@@ -1,0 +1,273 @@
+/* Billing Management Professional Styles */
+.billing-management {
+  padding: 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.billing-header {
+  margin-bottom: 48px;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border: none;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  color: white;
+}
+
+.billing-header .ant-card-body {
+  padding: 48px;
+  text-align: center;
+}
+
+.billing-title {
+  color: white !important;
+  margin: 0 !important;
+  font-size: 3rem;
+  font-weight: 800;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.billing-subtitle {
+  color: #e2e8f0 !important;
+  font-size: 1.2rem;
+  margin-top: 16px !important;
+  opacity: 0.9;
+}
+
+.plans-container {
+  margin: 48px 0;
+}
+
+.plan-card {
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border: 2px solid transparent;
+  background: white;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  height: 100%;
+}
+
+.plan-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+  border-color: #667eea;
+}
+
+.plan-card.popular-plan {
+  border-color: #667eea;
+  background: linear-gradient(135deg, #f8faff 0%, #e8f2ff 100%);
+  position: relative;
+}
+
+.popular-badge {
+  position: absolute;
+  top: 20px;
+  right: -35px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  color: white;
+  padding: 8px 40px;
+  transform: rotate(45deg);
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+  z-index: 10;
+}
+
+.plan-header {
+  text-align: center;
+  padding: 32px 24px 16px;
+}
+
+.plan-name {
+  color: #1a202c !important;
+  font-weight: 700;
+  margin-bottom: 16px !important;
+}
+
+.plan-pricing {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+}
+
+.plan-price {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: #667eea;
+  text-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+}
+
+.plan-duration {
+  color: #64748b;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.plan-features {
+  padding: 0 24px 24px;
+}
+
+.feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  color: #4a5568;
+  font-weight: 500;
+  border-bottom: 1px solid #f7fafc;
+}
+
+.feature-item:last-child {
+  border-bottom: none;
+}
+
+.feature-check {
+  color: #48bb78;
+  font-size: 1.1rem;
+  margin-right: 12px;
+  font-weight: bold;
+}
+
+.plan-action {
+  padding: 0 24px 32px;
+}
+
+.plan-button {
+  height: 50px;
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.plan-button.ant-btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.plan-button.ant-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(102, 126, 234, 0.4);
+}
+
+.plan-button.ant-btn-default {
+  border: 2px solid #667eea;
+  color: #667eea;
+  background: white;
+}
+
+.plan-button.ant-btn-default:hover {
+  background: #667eea;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.features-showcase {
+  margin-top: 64px;
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  border: none;
+  background: white;
+}
+
+.features-showcase .ant-card-body {
+  padding: 48px;
+}
+
+.showcase-item {
+  text-align: center;
+  padding: 24px;
+}
+
+.showcase-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  color: white;
+  font-size: 2rem;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.showcase-item h4 {
+  color: #1a202c !important;
+  margin-bottom: 16px !important;
+}
+
+.showcase-item .ant-typography {
+  color: #64748b !important;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .billing-management {
+    padding: 16px;
+  }
+  
+  .billing-header .ant-card-body {
+    padding: 32px 24px;
+  }
+  
+  .billing-title {
+    font-size: 2.2rem;
+  }
+  
+  .billing-subtitle {
+    font-size: 1rem;
+  }
+  
+  .plan-price {
+    font-size: 2.5rem;
+  }
+  
+  .features-showcase .ant-card-body {
+    padding: 32px 24px;
+  }
+}
+
+/* Animation */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.popular-plan {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Modal Customization */
+.ant-modal-header {
+  border-radius: 8px 8px 0 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-bottom: none;
+}
+
+.ant-modal-title {
+  color: white;
+  font-weight: 600;
+}
+
+.ant-modal-close {
+  color: white;
+}
+
+.ant-modal-close:hover {
+  color: #f0f0f0;
+}

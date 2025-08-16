@@ -1,205 +1,155 @@
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from django.db.models import Q
-import sys
-import os
-
-# Add existing_modules to path to import preserved Python logic
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'existing_modules'))
-
-from .models import User, DailySchedule, SchedulesSummary, WorkloadCounter, Substitute
-from .serializers import UserSerializer, DailyScheduleSerializer, SchedulesSummarySerializer, WorkloadCounterSerializer, SubstituteSerializer
-from authentication.models import School
-
-# Import preserved logic
-try:
-    import data_manager
-    from csv_importer import CSVImporter
-except ImportError as e:
-    print(f"Warning: Could not import preserved logic: {e}")
-    data_manager = None
-    CSVImporter = None
+from django.db import connection
+import json
+from datetime import datetime
 
 @api_view(['GET'])
-@permission_classes([AllowAny])  # For development - should be authenticated
-def get_teachers(request):
+@permission_classes([AllowAny])
+def get_all_teachers(request, school_id):
     """Get all teachers for a school"""
-    school_id = request.GET.get('school_id')
-    
-    if not school_id:
-        return Response({
-            'success': False,
-            'error': 'School ID is required'
-        }, status=status.HTTP_400_BAD_REQUEST)
-    
     try:
-        teachers = User.objects.filter(school_id=school_id)
-        serializer = UserSerializer(teachers, many=True)
-        return Response({
-            'success': True,
-            'teachers': serializer.data
-        })
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT teacher_id, name, phone, category, biometric_code 
+                FROM teachers 
+                WHERE school_id = %s 
+                ORDER BY name
+            """, [school_id])
+            
+            teachers_data = cursor.fetchall()
+            teachers = []
+            for teacher in teachers_data:
+                teachers.append({
+                    'teacher_id': teacher[0],
+                    'name': teacher[1],
+                    'phone': teacher[2],
+                    'category': teacher[3],
+                    'biometric_code': teacher[4] or ''
+                })
+            
+            return Response({'teachers': teachers}, status=status.HTTP_200_OK)
     except Exception as e:
-        return Response({
-            'success': False,
-            'error': str(e)
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        print(f"Error fetching teachers: {e}")
+        return Response(
+            {'error': 'Failed to fetch teachers'}, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-def add_teacher(request):
+def add_teacher(request, school_id):
     """Add a new teacher"""
     try:
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({
-                'success': True,
-                'message': 'Teacher added successfully',
-                'teacher': serializer.data
-            }, status=status.HTTP_201_CREATED)
-        else:
-            return Response({
-                'success': False,
-                'error': 'Invalid data',
-                'details': serializer.errors
-            }, status=status.HTTP_400_BAD_REQUEST)
+        data = request.data
+        teacher_id = data.get('teacher_id')
+        name = data.get('name')
+        phone = data.get('phone')
+        category = data.get('category')
+        biometric_code = data.get('biometric_code', '')
+        
+        if not all([teacher_id, name, phone, category]):
+            return Response(
+                {'error': 'Teacher ID, name, phone and category are required'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        with connection.cursor() as cursor:
+            # Check if teacher ID already exists
+            cursor.execute(
+                "SELECT COUNT(*) FROM teachers WHERE school_id = %s AND teacher_id = %s",
+                [school_id, teacher_id]
+            )
+            if cursor.fetchone()[0] > 0:
+                return Response(
+                    {'error': 'Teacher ID already exists'}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Insert new teacher
+            cursor.execute("""
+                INSERT INTO teachers (school_id, teacher_id, name, phone, category, biometric_code)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """, [school_id, teacher_id, name, phone, category, biometric_code])
+            
+            return Response(
+                {'message': 'Teacher added successfully'}, 
+                status=status.HTTP_201_CREATED
+            )
     except Exception as e:
-        return Response({
-            'success': False,
-            'error': str(e)
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        print(f"Error adding teacher: {e}")
+        return Response(
+            {'error': 'Failed to add teacher'}, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 @api_view(['PUT'])
 @permission_classes([AllowAny])
-def update_teacher(request, teacher_id):
-    """Update teacher information"""
+def update_teacher(request, school_id, teacher_id):
+    """Update teacher details"""
     try:
-        teacher = User.objects.get(id=teacher_id)
-        serializer = UserSerializer(teacher, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({
-                'success': True,
-                'message': 'Teacher updated successfully',
-                'teacher': serializer.data
-            })
-        else:
-            return Response({
-                'success': False,
-                'error': 'Invalid data',
-                'details': serializer.errors
-            }, status=status.HTTP_400_BAD_REQUEST)
-    except User.DoesNotExist:
-        return Response({
-            'success': False,
-            'error': 'Teacher not found'
-        }, status=status.HTTP_404_NOT_FOUND)
+        data = request.data
+        name = data.get('name')
+        phone = data.get('phone')
+        category = data.get('category')
+        biometric_code = data.get('biometric_code', '')
+        
+        if not all([name, phone, category]):
+            return Response(
+                {'error': 'Name, phone and category are required'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                UPDATE teachers 
+                SET name = %s, phone = %s, category = %s, biometric_code = %s
+                WHERE school_id = %s AND teacher_id = %s
+            """, [name, phone, category, biometric_code, school_id, teacher_id])
+            
+            if cursor.rowcount == 0:
+                return Response(
+                    {'error': 'Teacher not found'}, 
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            
+            return Response(
+                {'message': 'Teacher updated successfully'}, 
+                status=status.HTTP_200_OK
+            )
     except Exception as e:
-        return Response({
-            'success': False,
-            'error': str(e)
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        print(f"Error updating teacher: {e}")
+        return Response(
+            {'error': 'Failed to update teacher'}, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 @api_view(['DELETE'])
 @permission_classes([AllowAny])
-def delete_teacher(request, teacher_id):
+def delete_teacher(request, school_id, teacher_id):
     """Delete a teacher"""
     try:
-        teacher = User.objects.get(id=teacher_id)
-        teacher.delete()
-        return Response({
-            'success': True,
-            'message': 'Teacher deleted successfully'
-        })
-    except User.DoesNotExist:
-        return Response({
-            'success': False,
-            'error': 'Teacher not found'
-        }, status=status.HTTP_404_NOT_FOUND)
-    except Exception as e:
-        return Response({
-            'success': False,
-            'error': str(e)
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def get_schedule(request):
-    """Get schedule for a school"""
-    school_id = request.GET.get('school_id')
-    day_of_week = request.GET.get('day_of_week')
-    
-    if not school_id:
-        return Response({
-            'success': False,
-            'error': 'School ID is required'
-        }, status=status.HTTP_400_BAD_REQUEST)
-    
-    try:
-        schedules = DailySchedule.objects.filter(school_id=school_id)
-        if day_of_week:
-            schedules = schedules.filter(day_of_week=day_of_week)
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "DELETE FROM teachers WHERE school_id = %s AND teacher_id = %s",
+                [school_id, teacher_id]
+            )
             
-        serializer = DailyScheduleSerializer(schedules, many=True)
-        return Response({
-            'success': True,
-            'schedules': serializer.data
-        })
+            if cursor.rowcount == 0:
+                return Response(
+                    {'error': 'Teacher not found'}, 
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            
+            return Response(
+                {'message': 'Teacher deleted successfully'}, 
+                status=status.HTTP_200_OK
+            )
     except Exception as e:
-        return Response({
-            'success': False,
-            'error': str(e)
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def get_workload(request):
-    """Get workload counter for teachers"""
-    school_id = request.GET.get('school_id')
-    
-    if not school_id:
-        return Response({
-            'success': False,
-            'error': 'School ID is required'
-        }, status=status.HTTP_400_BAD_REQUEST)
-    
-    try:
-        workloads = WorkloadCounter.objects.filter(school_id=school_id)
-        serializer = WorkloadCounterSerializer(workloads, many=True)
-        return Response({
-            'success': True,
-            'workloads': serializer.data
-        })
-    except Exception as e:
-        return Response({
-            'success': False,
-            'error': str(e)
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def get_substitutes(request):
-    """Get substitute teachers for a school"""
-    school_id = request.GET.get('school_id')
-    
-    if not school_id:
-        return Response({
-            'success': False,
-            'error': 'School ID is required'
-        }, status=status.HTTP_400_BAD_REQUEST)
-    
-    try:
-        substitutes = Substitute.objects.filter(school_id=school_id)
-        serializer = SubstituteSerializer(substitutes, many=True)
-        return Response({
-            'success': True,
-            'substitutes': serializer.data
-        })
-    except Exception as e:
-        return Response({
-            'success': False,
-            'error': str(e)
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        print(f"Error deleting teacher: {e}")
+        return Response(
+            {'error': 'Failed to delete teacher'}, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )

@@ -8,7 +8,9 @@ import {
   SwapOutlined,
   ClockCircleOutlined,
   BarChartOutlined,
-  BookOutlined
+  BookOutlined,
+  CrownOutlined,
+  SettingOutlined
 } from '@ant-design/icons';
 
 const { Sider } = Layout;
@@ -40,14 +42,19 @@ const AppSidebar = ({ collapsed, onCollapse, user }) => {
       label: 'Arrangements',
     },
     {
-      key: '/schedules',
-      icon: <CalendarOutlined />,
-      label: 'Schedules',
-    },
-    {
       key: '/reports',
       icon: <BarChartOutlined />,
       label: 'Reports',
+    },
+    {
+      key: '/billing',
+      icon: <CrownOutlined />,
+      label: 'Billing',
+    },
+    {
+      key: '/admin',
+      icon: <SettingOutlined />,
+      label: 'Admin Controls',
     },
   ];
 

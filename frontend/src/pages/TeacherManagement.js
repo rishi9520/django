@@ -20,11 +20,13 @@ import {
   UserOutlined 
 } from '@ant-design/icons';
 import { apiService } from '../services/apiService';
+import '../styles/TeacherManagement.css';
 
 const { Title } = Typography;
 const { Search } = Input;
 
-const TeacherManagement = ({ user }) => {
+const TeacherManagement = () => {
+  const user = JSON.parse(localStorage.getItem('user'));
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -40,9 +42,7 @@ const TeacherManagement = ({ user }) => {
     try {
       setLoading(true);
       const response = await apiService.getTeachers(user.school_id);
-      if (response.success) {
-        setTeachers(response.teachers);
-      }
+      setTeachers(response.teachers || []);
     } catch (error) {
       console.error('Error fetching teachers:', error);
       message.error('Failed to load teachers');
@@ -70,7 +70,7 @@ const TeacherManagement = ({ user }) => {
       content: `Are you sure you want to delete ${record.name}?`,
       onOk: async () => {
         try {
-          await apiService.deleteTeacher(record.id);
+          await apiService.deleteTeacher(user.school_id, record.teacher_id);
           message.success('Teacher deleted successfully');
           fetchTeachers();
         } catch (error) {
@@ -83,16 +83,17 @@ const TeacherManagement = ({ user }) => {
   const handleSubmit = async (values) => {
     try {
       if (editingTeacher) {
-        await apiService.updateTeacher(editingTeacher.id, values);
+        await apiService.updateTeacher(user.school_id, editingTeacher.teacher_id, values);
         message.success('Teacher updated successfully');
       } else {
-        await apiService.addTeacher(values);
+        await apiService.addTeacher(user.school_id, values);
         message.success('Teacher added successfully');
       }
       setModalVisible(false);
       fetchTeachers();
     } catch (error) {
-      message.error('Failed to save teacher');
+      const errorMsg = error.response?.data?.error || 'Failed to save teacher';
+      message.error(errorMsg);
     }
   };
 
@@ -183,7 +184,7 @@ const TeacherManagement = ({ user }) => {
         <Table
           columns={columns}
           dataSource={teachers}
-          rowKey="id"
+          rowKey="teacher_id"
           loading={loading}
           pagination={{
             pageSize: 10,

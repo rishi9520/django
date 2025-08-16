@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Layout, message } from 'antd';
 import LoginPage from './pages/LoginPage';
-import Dashboard from './pages/Dashboard';
+import ProfessionalDashboard from './pages/ProfessionalDashboard';
 import TeacherManagement from './pages/TeacherManagement';
 import AttendanceManagement from './pages/AttendanceManagement';
-import ArrangementManagement from './pages/ArrangementManagement';
-import ScheduleManagement from './pages/ScheduleManagement';
-import Reports from './pages/Reports';
+import ArrangementManagementPro from './pages/ArrangementManagementPro';
+import ReportsManagement from './pages/ReportsManagement';
+import BillingManagement from './pages/BillingManagement';
+import AdminControls from './pages/AdminControls';
 import { apiService } from './services/apiService';
 import AppHeader from './components/AppHeader';
 import AppSidebar from './components/AppSidebar';
@@ -76,13 +77,14 @@ function App() {
         />
         <Content className="mobile-responsive">
           <Routes>
-            <Route path="/" element={<Dashboard user={user} />} />
-            <Route path="/dashboard" element={<Dashboard user={user} />} />
-            <Route path="/teachers" element={<TeacherManagement user={user} />} />
-            <Route path="/attendance" element={<AttendanceManagement user={user} />} />
-            <Route path="/arrangements" element={<ArrangementManagement user={user} />} />
-            <Route path="/schedules" element={<ScheduleManagement user={user} />} />
-            <Route path="/reports" element={<Reports user={user} />} />
+            <Route path="/" element={<ProfessionalDashboard />} />
+            <Route path="/dashboard" element={<ProfessionalDashboard />} />
+            <Route path="/teachers" element={<TeacherManagement />} />
+            <Route path="/attendance" element={<AttendanceManagement />} />
+            <Route path="/arrangements" element={<ArrangementManagementPro />} />
+            <Route path="/reports" element={<ReportsManagement />} />
+            <Route path="/billing" element={<BillingManagement />} />
+            <Route path="/admin" element={<AdminControls />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </Content>

@@ -40,6 +40,12 @@ apiClient.interceptors.response.use(
 );
 
 export const apiService = {
+  // Raw HTTP methods
+  get: (url, config = {}) => apiClient.get(url, config),
+  post: (url, data = {}, config = {}) => apiClient.post(url, data, config),
+  put: (url, data = {}, config = {}) => apiClient.put(url, data, config),
+  delete: (url, config = {}) => apiClient.delete(url, config),
+  
   // Authentication
   async getSchools() {
     const response = await apiClient.get('/auth/schools/');
@@ -56,60 +62,73 @@ export const apiService = {
     return response.data;
   },
 
-  async getProfile() {
-    const response = await apiClient.get('/auth/profile/');
-    return response.data;
-  },
-
-  // Teachers
+  // Teachers 
   async getTeachers(schoolId) {
-    const response = await apiClient.get(`/teachers/?school_id=${schoolId}`);
+    const response = await apiClient.get(`/teachers/${schoolId}/`);
     return response.data;
   },
 
-  async addTeacher(teacherData) {
-    const response = await apiClient.post('/teachers/add/', teacherData);
+  async addTeacher(schoolId, teacherData) {
+    const response = await apiClient.post(`/teachers/${schoolId}/add/`, teacherData);
     return response.data;
   },
 
-  async updateTeacher(teacherId, teacherData) {
-    const response = await apiClient.put(`/teachers/${teacherId}/update/`, teacherData);
+  async updateTeacher(schoolId, teacherId, teacherData) {
+    const response = await apiClient.put(`/teachers/${schoolId}/${teacherId}/update/`, teacherData);
     return response.data;
   },
 
-  async deleteTeacher(teacherId) {
-    const response = await apiClient.delete(`/teachers/${teacherId}/delete/`);
+  async deleteTeacher(schoolId, teacherId) {
+    const response = await apiClient.delete(`/teachers/${schoolId}/${teacherId}/delete/`);
     return response.data;
   },
 
-  async getSchedule(schoolId, dayOfWeek = null) {
-    let url = `/teachers/schedule/?school_id=${schoolId}`;
-    if (dayOfWeek) {
-      url += `&day_of_week=${dayOfWeek}`;
-    }
+  // Arrangements
+  async getAbsentTeachers(schoolId, date = null) {
+    let url = `/arrangements/${schoolId}/absent-teachers/`;
+    if (date) url += `?date=${date}`;
     const response = await apiClient.get(url);
     return response.data;
   },
 
-  async getWorkload(schoolId) {
-    const response = await apiClient.get(`/teachers/workload/?school_id=${schoolId}`);
+  async getArrangements(schoolId, date = null) {
+    let url = `/arrangements/${schoolId}/arrangements/`;
+    if (date) url += `?date=${date}`;
+    const response = await apiClient.get(url);
     return response.data;
   },
 
-  async getSubstitutes(schoolId) {
-    const response = await apiClient.get(`/teachers/substitutes/?school_id=${schoolId}`);
+  async createManualArrangement(schoolId, arrangementData) {
+    const response = await apiClient.post(`/arrangements/${schoolId}/create-manual/`, arrangementData);
     return response.data;
   },
 
-  // Arrangements (to be implemented)
-  async getArrangements(schoolId) {
-    // Placeholder - implement when backend is ready
-    return { success: true, arrangements: [] };
+  // Attendance
+  async getAttendanceReport(schoolId, startDate, endDate) {
+    const response = await apiClient.get(`/attendance/${schoolId}/report/?start_date=${startDate}&end_date=${endDate}`);
+    return response.data;
   },
 
-  // Attendance (to be implemented)
-  async getAttendance(schoolId) {
-    // Placeholder - implement when backend is ready
-    return { success: true, attendance: [] };
+  async markAttendance(schoolId, attendanceData) {
+    const response = await apiClient.post(`/attendance/${schoolId}/mark/`, attendanceData);
+    return response.data;
+  },
+
+  async getDailyAttendance(schoolId, date = null) {
+    let url = `/attendance/${schoolId}/daily/`;
+    if (date) url += `?date=${date}`;
+    const response = await apiClient.get(url);
+    return response.data;
+  },
+
+  // Schedules
+  async getSchoolSchedule(schoolId) {
+    const response = await apiClient.get(`/schedules/${schoolId}/`);
+    return response.data;
+  },
+
+  async getTeacherSchedule(schoolId, teacherId) {
+    const response = await apiClient.get(`/schedules/${schoolId}/teacher/${teacherId}/`);
+    return response.data;
   },
 };

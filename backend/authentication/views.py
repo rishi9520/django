@@ -62,16 +62,23 @@ def login(request):
                     status=status.HTTP_401_UNAUTHORIZED
                 )
 
-            # Check password (assuming bcrypt hashed)
+            # Check password (handle both plain text and bcrypt hashed)
             stored_password = admin_data[3]
-            if isinstance(stored_password, str):
-                stored_password = stored_password.encode('utf-8')
-
-            if isinstance(password, str):
-                password = password.encode('utf-8')
-
-            # For now, simple string comparison (you can implement bcrypt later)
-            if stored_password.decode('utf-8') == password.decode('utf-8'):
+            
+            # Check if password is bcrypt hashed (starts with $2b$)
+            if stored_password.startswith('$2b$'):
+                # Bcrypt hashed password
+                if isinstance(password, str):
+                    password = password.encode('utf-8')
+                if isinstance(stored_password, str):
+                    stored_password = stored_password.encode('utf-8')
+                
+                password_match = bcrypt.checkpw(password, stored_password)
+            else:
+                # Plain text password (for demo purposes)
+                password_match = stored_password == password
+            
+            if password_match:
                 admin_info = {
                     'id': admin_data[0],
                     'school_id': admin_data[1],

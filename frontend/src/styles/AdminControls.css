@@ -1,0 +1,397 @@
+/* Admin Controls Professional Styles */
+.admin-controls {
+  padding: 24px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+}
+
+.header-card {
+  margin-bottom: 24px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border: none;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  color: white;
+}
+
+.header-card .ant-card-body {
+  padding: 32px;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.page-title {
+  color: white !important;
+  margin: 0 !important;
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.header-card .ant-typography {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Statistics Cards */
+.stat-card {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card .ant-statistic-title {
+  color: #64748b;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.stat-card .ant-statistic-content {
+  font-weight: 700;
+}
+
+/* Content Cards */
+.content-card {
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border: none;
+  background: white;
+}
+
+.content-card .ant-card-head {
+  border-bottom: 2px solid #f0f2f5;
+  padding: 24px 24px 16px;
+}
+
+.content-card .ant-card-head-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #1a202c;
+}
+
+.content-card .ant-card-body {
+  padding: 24px;
+}
+
+/* Tabs Styling */
+.admin-tabs .ant-tabs-tab {
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 12px 24px;
+}
+
+.admin-tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #ff6b6b;
+}
+
+.admin-tabs .ant-tabs-ink-bar {
+  background: linear-gradient(90deg, #ff6b6b 0%, #ee5a24 100%);
+  height: 3px;
+}
+
+/* Table Styling */
+.admin-table .ant-table-thead > tr > th {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 2px solid #dee2e6;
+  padding: 16px;
+}
+
+.admin-table .ant-table-tbody > tr {
+  transition: all 0.3s ease;
+}
+
+.admin-table .ant-table-tbody > tr:hover > td {
+  background: linear-gradient(135deg, #fff0f0 0%, #ffe6e6 100%);
+}
+
+.admin-table .ant-table-tbody > tr > td {
+  padding: 16px;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+/* Tags */
+.ant-tag {
+  border-radius: 16px;
+  padding: 4px 12px;
+  font-weight: 500;
+  border: none;
+}
+
+/* Form Cards */
+.admin-controls .ant-card {
+  margin-bottom: 16px;
+}
+
+.admin-controls .ant-card-head-title {
+  font-weight: 600;
+  color: #1a202c;
+}
+
+/* Settings Switches */
+.admin-controls .ant-row {
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.admin-controls .ant-row:last-child {
+  border-bottom: none;
+}
+
+/* Quick Action Cards */
+.admin-controls .ant-card .anticon {
+  display: block;
+  margin: 0 auto 16px;
+}
+
+/* Activity List */
+.admin-controls .ant-list-item {
+  border-bottom: 1px solid #f0f2f5;
+  padding: 16px 0;
+}
+
+.admin-controls .ant-list-item:last-child {
+  border-bottom: none;
+}
+
+.admin-controls .ant-list-item-meta-avatar {
+  margin-right: 16px;
+}
+
+/* Button Styling */
+.ant-btn {
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.ant-btn-primary {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  border: none;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+
+.ant-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+}
+
+.ant-btn-default {
+  border: 2px solid #e9ecef;
+  color: #495057;
+}
+
+.ant-btn-default:hover {
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+  transform: translateY(-1px);
+}
+
+.ant-btn-link {
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+.ant-btn-link:hover {
+  color: #ee5a24;
+  transform: scale(1.05);
+}
+
+.ant-btn-link.ant-btn-dangerous {
+  color: #ff4d4f;
+}
+
+.ant-btn-link.ant-btn-dangerous:hover {
+  color: #ff7875;
+}
+
+/* Progress Circle */
+.admin-controls .ant-progress-circle {
+  margin-bottom: 8px;
+}
+
+/* Modal Styling */
+.ant-modal-header {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  border-radius: 8px 8px 0 0;
+  border-bottom: none;
+}
+
+.ant-modal-title {
+  color: white;
+  font-weight: 600;
+}
+
+.ant-modal-close {
+  color: white;
+}
+
+.ant-modal-close:hover {
+  color: #f0f0f0;
+}
+
+.ant-form-item-label > label {
+  font-weight: 600;
+  color: #495057;
+}
+
+.ant-input,
+.ant-select-selector {
+  border-radius: 8px;
+  border: 2px solid #e9ecef;
+  transition: all 0.3s ease;
+}
+
+.ant-input:focus,
+.ant-select-focused .ant-select-selector {
+  border-color: #ff6b6b;
+  box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
+}
+
+/* Upload Styling */
+.ant-upload {
+  width: 100%;
+}
+
+.ant-upload .ant-btn {
+  width: 100%;
+}
+
+/* Alert Styling */
+.ant-alert {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.ant-alert-info {
+  background: linear-gradient(135deg, #e6f7ff 0%, #bae7ff 100%);
+  border-left: 4px solid #1890ff;
+}
+
+/* Switch Styling */
+.ant-switch-checked {
+  background-color: #ff6b6b;
+}
+
+/* Avatar Styling */
+.ant-avatar {
+  background-color: #ff6b6b;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-controls {
+    padding: 16px;
+  }
+  
+  .header-card .ant-card-body {
+    padding: 24px;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .page-title {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+  
+  .content-card .ant-card-body {
+    padding: 20px;
+  }
+  
+  .admin-tabs .ant-tabs-tab {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+  
+  .stat-card .ant-statistic-content {
+    font-size: 1.5rem;
+  }
+}
+
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stat-card,
+.content-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.stat-card:nth-child(1) { animation-delay: 0.1s; }
+.stat-card:nth-child(2) { animation-delay: 0.2s; }
+.stat-card:nth-child(3) { animation-delay: 0.3s; }
+.stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+/* Special Effects */
+.admin-controls .ant-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transition: all 0.3s ease;
+}
+
+/* System Health Indicator */
+.system-health-good {
+  color: #52c41a;
+}
+
+.system-health-warning {
+  color: #faad14;
+}
+
+.system-health-critical {
+  color: #ff4d4f;
+}
+
+/* Data Cards */
+.data-management-card {
+  text-align: center;
+  padding: 24px;
+  height: 100%;
+}
+
+.data-management-card .anticon {
+  margin-bottom: 16px;
+}
+
+/* Activity Log Colors */
+.activity-info .anticon {
+  color: #1890ff;
+}
+
+.activity-warning .anticon {
+  color: #faad14;
+}
+
+.activity-success .anticon {
+  color: #52c41a;
+}
+
+.activity-error .anticon {
+  color: #ff4d4f;
+}
